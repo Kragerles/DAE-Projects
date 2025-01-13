@@ -1,0 +1,15 @@
+C:\Users\krage\DAE_Stuff\c#_1\bin\Debug\net9.0\c#_1.exe
+C:\Users\krage\DAE_Stuff\c#_1\bin\Debug\net9.0\c#_1.deps.json
+C:\Users\krage\DAE_Stuff\c#_1\bin\Debug\net9.0\c#_1.runtimeconfig.json
+C:\Users\krage\DAE_Stuff\c#_1\bin\Debug\net9.0\c#_1.dll
+C:\Users\krage\DAE_Stuff\c#_1\bin\Debug\net9.0\c#_1.pdb
+C:\Users\krage\DAE_Stuff\c#_1\obj\Debug\net9.0\c#_1.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\krage\DAE_Stuff\c#_1\obj\Debug\net9.0\c#_1.AssemblyInfoInputs.cache
+C:\Users\krage\DAE_Stuff\c#_1\obj\Debug\net9.0\c#_1.AssemblyInfo.cs
+C:\Users\krage\DAE_Stuff\c#_1\obj\Debug\net9.0\c#_1.csproj.CoreCompileInputs.cache
+C:\Users\krage\DAE_Stuff\c#_1\obj\Debug\net9.0\c#_1.sourcelink.json
+C:\Users\krage\DAE_Stuff\c#_1\obj\Debug\net9.0\c#_1.dll
+C:\Users\krage\DAE_Stuff\c#_1\obj\Debug\net9.0\refint\c#_1.dll
+C:\Users\krage\DAE_Stuff\c#_1\obj\Debug\net9.0\c#_1.pdb
+C:\Users\krage\DAE_Stuff\c#_1\obj\Debug\net9.0\c#_1.genruntimeconfig.cache
+C:\Users\krage\DAE_Stuff\c#_1\obj\Debug\net9.0\ref\c#_1.dll
