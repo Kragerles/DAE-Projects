@@ -1,8 +1,6 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.SearchService;
+using UnityEditor;
 using UnityEngine;
 
 public class GameManagerSandbox : MonoBehaviour
@@ -16,26 +14,28 @@ public class GameManagerSandbox : MonoBehaviour
 
     public GameObject ignoreDestroy;
 
-    public List<GameObject> Objects = new List<GameObject>();
+    public List<GameObject> Objects = new();
     public int activeObjectIndex;
-    private Stack<bool> undoStack = new Stack<bool>();
-    private Stack<int> placeTypeStack = new Stack<int>();
-    private Stack<Vector3> placePosStack = new Stack<Vector3>();
-    private Stack<> deleteStack = new Stack<>();
+    public Stack<UnityEngine.Object> undoStack = new();
+    public Stack<bool> undoType = new();
 
     private void Update(){
         if (Input.GetMouseButtonDown(0)){
-            placeObject();
+            PlaceObject();
         }
         if(Input.GetKeyDown(KeyCode.LeftControl)){
-            deleteObject();
+            DeleteObject();
         }
         if(Input.GetKeyDown(KeyCode.Z)){
-            
+            if(undoType.Pop()==true){
+                Instantiate(undoStack.Pop());
+            }else{
+                Destroy(undoStack.Pop());
+            }
         }
     }
 
-    public void placeObject()
+    public void PlaceObject()
     {
         Vector3 mousePos = Input.mousePosition;
         mousePos.z = camera.nearClipPlane;
@@ -49,14 +49,12 @@ public class GameManagerSandbox : MonoBehaviour
             mousePosition = hit.point;
             gridPosition = grid.GetCellCenterWorld(grid.WorldToCell(mousePosition));
             Debug.DrawLine(mousePosition, mousePosition + Vector3.up * 1, Color.white);
-            placeTypeStack.Push(activeObjectIndex);
-            placePosStack.Push(gridPosition);
-            undoStack.Push(true);
-            Instantiate(Objects[activeObjectIndex], gridPosition, Quaternion.identity);
+            undoStack.Push(Instantiate(Objects[activeObjectIndex], gridPosition, Quaternion.identity));
+            undoType.Push(false);
         }
     }
 
-    public void deleteObject(){
+    public void DeleteObject(){
         Vector3 mousePos = Input.mousePosition;
         mousePos.z = camera.nearClipPlane;
         Ray ray = camera.ScreenPointToRay(mousePos);
@@ -66,15 +64,15 @@ public class GameManagerSandbox : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 100, placementLayer)){
             //deletes item if not the grid
             if(!hit.collider.name.Equals(ignoreDestroy.name)){
-                mousePosition = hit.point;
-                gridPosition = grid.GetCellCenterWorld(grid.WorldToCell(mousePosition));
-                Debug.DrawLine(mousePosition, mousePosition + Vector3.up * 1, Color.white);
+                UnityEngine.Object copyOfDeleted = hit.collider.gameObject;
+                undoStack.Push(copyOfDeleted);
                 Destroy(hit.collider.gameObject);
+                undoType.Push(true);
             }  
         }
     }
 
-    public void changeObject(int index)
+    public void ChangeObject(int index)
     {
         activeObjectIndex = index;
     }
