@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 public class GameManagerSandbox : MonoBehaviour{
@@ -9,7 +10,7 @@ public class GameManagerSandbox : MonoBehaviour{
     public LayerMask placementLayer;
     public Grid grid;
     public GameObject ignoreDestroy;
-    public List<GameObject> Objects = new();
+    public List<GameObject> blocks = new();
     public int activeObjectIndex;
     public Stack<Object> undoPlaceStack = new();
     public Stack<int> undoDelIndex = new();
@@ -26,7 +27,7 @@ public class GameManagerSandbox : MonoBehaviour{
             if (undoType.Peek()){
                 int objIndex = undoDelIndex.Pop();
                 Vector3 position = undoPosStack.Pop();
-                GameObject restoredObject = Instantiate(Objects[objIndex], position, Quaternion.identity);
+                GameObject restoredObject = Instantiate(blocks[objIndex], position, Quaternion.identity);
                 undoPlaceStack.Push(restoredObject);
             }else{
                 if ((GameObject)undoPlaceStack.Peek()!=null){
@@ -40,24 +41,27 @@ public class GameManagerSandbox : MonoBehaviour{
         Vector3 mousePos = Input.mousePosition;
         mousePos.z = camera.nearClipPlane;
         Ray ray = camera.ScreenPointToRay(mousePos);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100, placementLayer)){
+        if (Physics.Raycast(ray, out RaycastHit hit, 100, placementLayer)){
             mousePosition = hit.point;
             gridPosition = grid.GetCellCenterWorld(grid.WorldToCell(mousePosition));
             Debug.DrawLine(mousePosition, mousePosition + Vector3.up * 1, Color.white);
-            undoPlaceStack.Push(Instantiate(Objects[activeObjectIndex], gridPosition, Quaternion.identity));
+            undoPlaceStack.Push(Instantiate(blocks[activeObjectIndex], gridPosition, Quaternion.identity));
             undoType.Push(false);
         }
     }
    public void DeleteObject(){
         Vector3 mousePos = Input.mousePosition;
-        mousePos.z = camera.nearClipPlane; 
+        mousePos.z = camera.nearClipPlane;
         Ray ray = camera.ScreenPointToRay(mousePos);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100, placementLayer)){
-            if(!hit.collider.name.Equals(ignoreDestroy.name)){
+        if (Physics.Raycast(ray, out RaycastHit hit, 100, placementLayer)){
+            if (!hit.collider.name.Equals(ignoreDestroy.name)){
                 undoPosStack.Push(hit.collider.gameObject.transform.position);
-                undoDelIndex.Push(0);
+                if(hit.collider.name.Equals("Cube(Clone)"))
+                    undoDelIndex.Push(0);
+                if(hit.collider.name.Equals("Cylinder(Clone)"))
+                    undoDelIndex.Push(1);
+                if(hit.collider.name.Equals("Sphere(Clone)"))
+                    undoDelIndex.Push(2);
                 Destroy(hit.collider.gameObject);
                 undoType.Push(true);
             }
